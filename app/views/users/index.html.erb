@@ -1,0 +1,25 @@
+<% if is_user_admin_or_superadmin? %>
+    <% if current_user.superadmin? %>
+        <h4>List of all Superadmins</h4>
+        <% @superadmins.each do |superadmin| %>
+            <%= superadmin.email %>
+            <br/>
+        <% end %>
+    <% end %>
+    <h4>List of all admins</h4>
+    <% @admins.each do |admin| %>
+        <%= admin.email %>
+        <% if admin.id != current_user.id %>
+            <%= link_to 'Destroy', admin_destroy_user_path(:id => admin.id), method: :delete, data: {confirm:'You Sure?'} %>
+        <% end %>
+        <br/>
+    <% end %>
+    <h4>List of all customers</h4>
+    <% @users.each do |user| %>
+        <%= user.email %>
+        <% if user.id != current_user.id %>
+            <%= link_to 'Destroy', admin_destroy_user_path(:id => user.id), method: :delete, data: {confirm:'You Sure?'} %>
+        <% end %>
+        <br/>
+    <% end %>
+<% end %>

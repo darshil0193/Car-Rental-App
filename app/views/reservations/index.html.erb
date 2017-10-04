@@ -5,17 +5,17 @@
 
 <table>
   <thead>
-    <tr>
-      <th>Checkout time</th>
-      <th>Return time</th>
-      <th>Checked out</th>
-      <th>Reserved</th>
-      <th colspan="3"></th>
-    </tr>
+  <tr>
+    <th>Checkout time</th>
+    <th>Return time</th>
+    <th>Checked out</th>
+    <th>Reserved</th>
+    <th colspan="3"></th>
+  </tr>
   </thead>
 
   <tbody>
-    <% @reservations.each do |reservation| %>
+  <% @reservations.each do |reservation| %>
       <tr>
         <td><%= reservation.checkout_time %></td>
         <td><%= reservation.return_time %></td>
@@ -23,13 +23,15 @@
         <td><%= reservation.reserved %></td>
         <td><%= link_to 'Show', reservation %></td>
         <td><%= link_to 'Edit', edit_reservation_path(reservation) %></td>
-        <td><%= link_to 'Destroy', reservation, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-        <% if reservation.checked_out? %>
-            <td><%= link_to 'Return', return_path(:reservation_id => reservation), method: :post%></td>
-        <% else %>
-            <td><%= link_to 'Check Out', checkout_path(:reservation_id => reservation), method: :post%></td>
+        <td><%= link_to 'Destroy', reservation, method: :delete, data: {confirm: 'Are you sure?'} %></td>
+        <% if is_user_admin_or_superadmin? %>
+            <% if reservation.checked_out? %>
+                <td><%= link_to 'Return', return_path(:reservation_id => reservation), method: :post %></td>
+            <% else %>
+                <td><%= link_to 'Check Out', checkout_path(:reservation_id => reservation), method: :post %></td>
+            <% end %>
         <% end %>
       </tr>
-    <% end %>
+  <% end %>
   </tbody>
 </table>
