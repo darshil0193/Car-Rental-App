@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  checkout_time: 2017-10-04 05:38:57
+  return_time: 2017-10-04 05:38:57
+  checked_out: false
+  reserved: false
+
+two:
+  checkout_time: 2017-10-04 05:38:57
+  return_time: 2017-10-04 05:38:57
+  checked_out: false
+  reserved: false

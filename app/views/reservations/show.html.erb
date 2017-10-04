@@ -1,0 +1,22 @@
+<p>
+  <strong>Checkout time:</strong>
+  <%= @reservation.checkout_time %>
+</p>
+
+<p>
+  <strong>Return time:</strong>
+  <%= @reservation.return_time %>
+</p>
+
+<p>
+  <strong>Checked out:</strong>
+  <%= @reservation.checked_out %>
+</p>
+
+<p>
+  <strong>Reserved:</strong>
+  <%= @reservation.reserved %>
+</p>
+
+<%= link_to 'Edit', edit_reservation_path(@reservation) %> |
+<%= link_to 'Back', reservations_path %>
