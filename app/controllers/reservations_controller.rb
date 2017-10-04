@@ -4,7 +4,7 @@ class ReservationsController < ApplicationController
   # GET /reservations
   # GET /reservations.json
   def index
-    @reservations = Reservation.all
+    @reservations = current_user.admin? || current_user.superadmin? ? Reservation.all : Reservation.where('user_id = ?', current_user.id)
   end
 
   # GET /reservations/1
@@ -27,9 +27,25 @@ class ReservationsController < ApplicationController
   # POST /reservations.json
   def create
     @reservation = Reservation.new(reservation_params)
-
+    if @reservation.checkout_time > DateTime.now.advance({days:7})
+      raise 'Reservations are allowed only till upcoming 7 days'
+    end
+    if @reservation.return_time < @reservation.checkout_time.advance({hours: 1}) or
+        @reservation.return_time > @reservation.checkout_time.advance({hours:10})
+      raise 'Reservation below 1 hour and more than 10 hours is not allowed'
+    end
+    if User.find(@reservation.user_id).has_reserved?
+      raise 'Can not have more than one reservations'
+    end
+    @reservation.reserved = true
     respond_to do |format|
       if @reservation.save
+        @car = Car.find(params[:reservation][:car_id])
+        @car.status = 'reserved'
+        @car.save
+        @user = User.find(params[:reservation][:user_id])
+        @user.has_reserved = true
+        @user.save
         format.html { redirect_to @reservation, notice: 'Reservation was successfully created.' }
         format.json { render :show, status: :created, location: @reservation }
       else
@@ -56,11 +72,38 @@ class ReservationsController < ApplicationController
   # DELETE /reservations/1
   # DELETE /reservations/1.json
   def destroy
+    @car = Car.find(@reservation.car_id)
+    @car.status = 'available'
+    @car.save
+    @user = User.find(@reservation.user_id)
+    @user.has_reserved = false
+    @user.save
     @reservation.destroy
     respond_to do |format|
       format.html { redirect_to reservations_url, notice: 'Reservation was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  def checkout
+    @reservation = Reservation.find(params[:reservation_id])
+    @reservation.checked_out = true
+    @reservation.save
+    @car = Car.find(@reservation.car_id)
+    @car.status = 'checked_out'
+    @car.save
+  end
+
+  def return
+    @reservation = Reservation.find(params[:reservation_id])
+    @reservation.checked_out = false
+    @reservation.save
+    @car = Car.find(@reservation.car_id)
+    @car.status = 'available'
+    @car.save
+    @user = User.find(@reservation.user_id)
+    @user.has_reserved = false
+    @user.save
   end
 
   private
@@ -71,6 +114,6 @@ class ReservationsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def reservation_params
-      params.require(:reservation).permit(:checkout_time, :return_time, :checked_out, :reserved)
+      params.require(:reservation).permit(:id, :user_id, :car_id, :checkout_time, :return_time, :checked_out, :reserved)
     end
 end

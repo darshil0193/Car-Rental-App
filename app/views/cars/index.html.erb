@@ -1,3 +1,6 @@
+<%= link_to 'Home', root_path %>
+<%= link_to 'Reservations', reservations_path %>
+
 <h1>Cars</h1>
 
 <%= form_tag(cars_path, method: :get) do %>
@@ -25,10 +28,14 @@
         <td><%= car.model %></td>
         <td><%= car.manufacturer %></td>
         <td><%= car.rate %></td>
-        <td><%= link_to 'Reserve', new_reservation_path(car_id: car.id)%></td>
         <td><%= link_to 'Show', car %></td>
-        <td><%= link_to 'Edit', edit_car_path(car) %></td>
-        <td><%= link_to 'Destroy', car, method: :delete, data: {confirm: 'Are you sure?'} %></td>
+        <% if is_user_admin_or_superadmin? %>
+          <td><%= link_to 'Edit', edit_car_path(car) %></td>
+          <td><%= link_to 'Destroy', car, method: :delete, data: {confirm: 'Are you sure?'} %></td>
+        <% end %>
+        <% if car.status == 'available' %>
+            <td><%= link_to 'Reserve', new_reservation_path(car_id: car.id)%></td>
+        <% end %>
       </tr>
   <% end %>
   </tbody>
