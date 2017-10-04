@@ -3,8 +3,8 @@ class CreateReservations < ActiveRecord::Migration[5.0]
     create_table :reservations do |t|
       t.datetime :checkout_time
       t.datetime :return_time
-      t.boolean :checked_out
-      t.boolean :reserved
+      t.boolean :checked_out, default: false
+      t.boolean :reserved, default: false
       t.references :user, foreign_key: true
       t.references :car, foreign_key: true
 

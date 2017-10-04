@@ -23,5 +23,7 @@
   <%= @car.rate %>
 </p>
 
-<%= link_to 'Edit', edit_car_path(@car) %> |
+<% if is_user_admin_or_superadmin? %>
+  <%= link_to 'Edit', edit_car_path(@car) %> |
+<% end %>
 <%= link_to 'Back', cars_path %>

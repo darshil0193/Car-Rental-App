@@ -35,6 +35,7 @@
     <%= f.datetime_select :return_time %>
   </div>
 
+    <% if is_user_admin_or_superadmin? %>
   <div class="field">
     <%= f.label :checked_out %>
     <%= f.check_box :checked_out %>
@@ -44,6 +45,7 @@
     <%= f.label :reserved %>
     <%= f.check_box :reserved %>
   </div>
+    <% end %>
 
   <div class="actions">
     <%= f.submit %>

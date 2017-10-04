@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171004093857) do
+ActiveRecord::Schema.define(version: 20171004191600) do
 
   create_table "cars", force: :cascade do |t|
     t.string   "registration_number"
@@ -26,12 +26,12 @@ ActiveRecord::Schema.define(version: 20171004093857) do
   create_table "reservations", force: :cascade do |t|
     t.datetime "checkout_time"
     t.datetime "return_time"
-    t.boolean  "checked_out"
-    t.boolean  "reserved"
+    t.boolean  "checked_out",   default: false
+    t.boolean  "reserved",      default: false
     t.integer  "user_id"
     t.integer  "car_id"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
     t.index ["car_id"], name: "index_reservations_on_car_id"
     t.index ["user_id"], name: "index_reservations_on_user_id"
   end
@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(version: 20171004093857) do
     t.datetime "updated_at",                             null: false
     t.boolean  "admin",                  default: false
     t.boolean  "superadmin",             default: false
+    t.boolean  "has_reserved"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
